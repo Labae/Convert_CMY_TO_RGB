@@ -169,9 +169,9 @@ public class CMYK_Color
             return;
         }
 
-        C = (1 - deltaR - K) / (1 - K);
-        M = (1 - deltaG - K) / (1 - K);
-        Y = (1 - deltaB - K) / (1 - K);
+        C = (1.0f - deltaR - K) / (1.0f - K);
+        M = (1.0f - deltaG - K) / (1.0f - K);
+        Y = (1.0f - deltaB - K) / (1.0f - K);
     }
 
     /// <summary>
@@ -180,9 +180,9 @@ public class CMYK_Color
     /// <returns></returns>
     public Color GetRGBColor()
     {
-        float r = (1 - C) * (1 - K);
-        float g = (1 - M) * (1 - K);
-        float b = (1 - Y) * (1 - K);
+        float r = (1.0f - C) * (1.0f - K);
+        float g = (1.0f - M) * (1.0f - K);
+        float b = (1.0f - Y) * (1.0f - K);
 
         return new Color(r, g, b);
     }
@@ -198,15 +198,12 @@ public class CMYK_Color
 
     public static CMYK_Color operator +(CMYK_Color color1, CMYK_Color color2)
     {
-        color1.Print();
-        color2.Print();
         float c = Mathf.Clamp01(color1.C + color2.C);
         float m = Mathf.Clamp01(color1.M + color2.M);
         float y = Mathf.Clamp01(color1.Y + color2.Y);
         float k = Mathf.Clamp01(color1.K + color2.K);
 
         CMYK_Color returnColor = new CMYK_Color(c, m, y, k);
-        returnColor.Print();
         return returnColor;
     }
 
