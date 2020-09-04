@@ -16,6 +16,8 @@ public class ColorManager : MonoBehaviour
     // 색상이 변할 대상의 Material.
     private Material _targetObjectMaterial = null;
 
+    private int _lastColorTypeIndex;
+
     private void Start()
     {
         if (_targetObject == null)
@@ -26,6 +28,7 @@ public class ColorManager : MonoBehaviour
         }
 
         _targetObjectMaterial = _targetObject.GetComponent<Renderer>().material;
+        _lastColorTypeIndex = (int)ColorType.LAST;
     }
 
     // TODO
@@ -41,28 +44,28 @@ public class ColorManager : MonoBehaviour
         }
         _colorTypeCountDictionary[addedColorType]++;
 
-        Color rgbOriginColor = Color.white;
         _addedColorCount++;
 
-        CMYK_Color originCMYKColor = new CMYK_Color(rgbOriginColor);
-        CMYK_Color mixedColor = originCMYKColor;
+        SetColor();
+    }
 
-        // Add color according to ratio.
-        // 색을 개수에 따른 비율로 더해준다.
-        for (int i = 0; i < _colorTypeCountDictionary.Count; i++)
+    public void SubstractionColor(int type)
+    {
+        ColorType addedColorType = (ColorType)type;
+        if (!_colorTypeCountDictionary.ContainsKey(addedColorType))
         {
-            ColorType colorType = (ColorType)i;
-            if(_colorTypeCountDictionary.ContainsKey(colorType))
-            {
-                CMYK_Color addedColor = new CMYK_Color(GetRGBColor(colorType));
-                float multiplationValue = (float)_colorTypeCountDictionary[colorType] / (float)_addedColorCount;
-                addedColor = addedColor * multiplationValue;
-
-                mixedColor += addedColor;
-            }
+            return;
         }
 
-        _targetObjectMaterial.color = mixedColor.GetRGBColor();
+        if (_colorTypeCountDictionary[addedColorType] == 0)
+        {
+            return;
+        }
+
+        _colorTypeCountDictionary[addedColorType]--;
+        _addedColorCount--;
+
+        SetColor();
     }
 
     /// <summary>
@@ -84,36 +87,36 @@ public class ColorManager : MonoBehaviour
         }
     }
 
-    // Get Color to use Color Type enum
-    private Color GetRGBColor(ColorType type)
+    private void SetColor()
     {
-        Color color = Color.clear;
-        switch (type)
+        if (_addedColorCount == 0)
         {
-            case ColorType.RED:
-                color = Color.red;
-                break;
-            case ColorType.ORANGE:
-                color = new Color(255.0f, 165.0f, 0.0f).DemcialToOne();
-                break;
-            case ColorType.YELLOW:
-                color = Color.yellow;
-                break;
-            case ColorType.GREEN:
-                color = Color.green;
-                break;
-            case ColorType.BLUE:
-                color = Color.blue;
-                break;
-            case ColorType.PURPLE:
-                color = new Color(255.0f, 0.0f, 255.0f).DemcialToOne();
-                break;
-            case ColorType.BLACK:
-                color = Color.black;
-                break;
+            _targetObjectMaterial.color = Color.white;
+            return;
         }
-        return color;
+
+        Color rgbOriginColor = Color.white;
+        CMYK_Color originCMYKColor = new CMYK_Color(rgbOriginColor);
+        CMYK_Color mixedColor = originCMYKColor;
+
+        // Add color according to ratio.
+        // 색을 개수에 따른 비율로 더해준다.
+        for (int i = 0; i < _lastColorTypeIndex; i++)
+        {
+            ColorType colorType = (ColorType)i;
+            if (_colorTypeCountDictionary.ContainsKey(colorType))
+            {
+                CMYK_Color addedColor = new CMYK_Color(ColorUtils.GetRGBColor(colorType));
+                float multiplationValue = (float)_colorTypeCountDictionary[colorType] / (float)_addedColorCount;
+
+                addedColor = addedColor * multiplationValue;
+                mixedColor += addedColor;
+            }
+        }
+
+        _targetObjectMaterial.color = mixedColor.GetRGBColor();
     }
+
 }
 
 public enum ColorType
@@ -204,7 +207,7 @@ public class CMYK_Color
 
     public static CMYK_Color operator *(CMYK_Color color, float value)
     {
-        if(value < 0.0f)
+        if (value < 0.0f)
         {
             Debug.LogError("ERROR CMYK MULTIPLATION VALUE IS LESS THAN ZERO.");
             return new CMYK_Color(Color.clear);
