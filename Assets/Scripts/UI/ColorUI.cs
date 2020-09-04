@@ -10,15 +10,24 @@ using UnityEngine.UI;
 public class ColorUI : MonoBehaviour
 {
     // Color Manager
+    [Tooltip("Color Manager (null이면 자동으로 찾음.)")]
     [SerializeField] private ColorManager _colorManager = null;
+
     // 색상을 더하는 버튼
+    [Tooltip("Color Add Button (null이면 자동으로 찾음.)")]
     [SerializeField] private Button _colorAddButton = null;
-    // 색상을 더한 수를 보여주는 텍스트
-    [SerializeField] private Text _colorCountText = null;
+
     // 색상을 빼는 버튼
+    [Tooltip("Color Substraction Button (null이면 자동으로 찾음.)")]
     [SerializeField] private Button _colorSubstractionButton = null;
+
+    // 색상을 더한 수를 보여주는 텍스트
+    [Tooltip("Color Count Text (null이면 자동으로 찾음.)")]
+    [SerializeField] private Text _colorCountText = null;
+
     private int _colorCount = 0;
 
+    [Tooltip("현 UI의 색상 타입")]
     public ColorType CurrentColorType;
     private int colorTypeIndex;
 

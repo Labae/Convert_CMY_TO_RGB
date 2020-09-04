@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class ColorUIGenerator : MonoBehaviour
 {
+    [Tooltip("Color UI Prefab")]
     [SerializeField] private GameObject _colorUIPrefab;
+
+    [Tooltip("Color Reset Button")]
     [SerializeField] private Button _colorResetButton;
 
     private void Start()

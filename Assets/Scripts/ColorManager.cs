@@ -5,8 +5,11 @@ using UnityEngine;
 public class ColorManager : MonoBehaviour
 {
     // 색상이 변할 대상.
+    [Tooltip("색상이 변할 GameObject")]
     [SerializeField] private GameObject _targetObject = null;
+
     // 모든 색깔이 더해진 횟수.
+    [Tooltip("색상이 더해진 횟수")]
     [SerializeField] private int _addedColorCount = 0;
 
     // color type count.
@@ -29,6 +32,8 @@ public class ColorManager : MonoBehaviour
 
         _targetObjectMaterial = _targetObject.GetComponent<Renderer>().material;
         _lastColorTypeIndex = (int)ColorType.LAST;
+
+        _addedColorCount = 0;
     }
 
     // TODO
